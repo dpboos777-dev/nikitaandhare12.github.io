@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clothify — Modern Clothing Store</title>
+  <meta name="description" content="A clean, responsive clothing store demo with product cards, search, and a simple cart." />
+
+  <!-- Embedded CSS (copy to style.css and link externally if you prefer) -->
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#ffffff; --accent:#1f7a8c; --muted:#6b7280; --glass: rgba(255,255,255,0.7);
+      --radius:14px; --shadow: 0 6px 18px rgba(16,24,40,0.08);
+      --max-width:1200px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#f8fafc 0%,var(--bg) 100%);color:#0f172a}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:var(--max-width);margin:0 auto;padding:24px}
+
+    /* Header */
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#5ac8d6);display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+    nav{display:flex;gap:18px;align-items:center}
+    nav a{padding:8px 12px;border-radius:10px;font-weight:600;color:var(--muted)}
+    .nav-cta{background:var(--card);box-shadow:var(--shadow);}
+
+    /* Search & controls */
+    .controls{display:flex;align-items:center;gap:12px}
+    .search{display:flex;align-items:center;background:var(--card);padding:8px;border-radius:12px;box-shadow:var(--shadow);min-width:220px}
+    .search input{border:0;background:transparent;outline:none;padding:6px 8px;width:170px}
+    .icon-btn{background:var(--card);border-radius:10px;padding:8px;box-shadow:var(--shadow);cursor:pointer}
+    .cart-badge{background:#ef4444;color:white;border-radius:999px;padding:2px 6px;font-size:12px;margin-left:6px}
+
+    /* Hero / Slider */
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:24px;align-items:center;margin:20px 0}
+    .hero-card{background:linear-gradient(180deg,#ffffff, #fdfefe);border-radius:20px;padding:28px;box-shadow:var(--shadow)}
+    .hero h1{font-size:28px;margin:0 0 8px}
+    .hero p{color:var(--muted);margin:0 0 16px}
+    .cta{background:var(--accent);color:#fff;padding:12px 16px;border-radius:12px;font-weight:700}
+    .hero-slider{position:relative;border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+    .slides{display:flex;transition:transform 0.6s ease}
+    .slide{min-width:100%;height:250px;background-size:cover;background-position:center}
+
+    /* Products */
+    .section-title{display:flex;justify-content:space-between;align-items:center;margin:20px 0}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+    .card{background:var(--card);border-radius:14px;padding:12px;box-shadow:var(--shadow);display:flex;flex-direction:column}
+    .card img{width:100%;border-radius:10px;object-fit:cover;height:220px}
+    .card .meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+    .price{font-weight:800}
+    .brand-name{color:var(--muted);font-size:13px}
+    .add{margin-top:10px;padding:10px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+
+    /* Cart modal */
+    .cart-modal{position:fixed;right:20px;top:70px;width:340px;background:var(--card);box-shadow:0 20px 50px rgba(2,6,23,0.2);border-radius:16px;padding:12px;display:none;z-index:60}
+    .cart-item{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+    .cart-item img{width:56px;height:56px;border-radius:8px;object-fit:cover}
+
+    /* Footer */
+    footer{margin-top:30px;padding:20px 0;color:var(--muted);font-size:14px;text-align:center}
+
+    /* Responsive */
+    @media (max-width:1000px){
+      .grid{grid-template-columns:repeat(3,1fr)}
+      .hero{grid-template-columns:1fr}
+      .hero-slider{height:220px}
+    }
+    @media (max-width:720px){
+      .grid{grid-template-columns:repeat(2,1fr)}
+      nav{display:none}
+      .search input{width:110px}
+    }
+    @media (max-width:420px){
+      .grid{grid-template-columns:1fr}
+      .container{padding:14px}
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">C</div>
+        <div>
+          <div style="font-weight:800">Clothify</div>
+          <div style="font-size:12px;color:var(--muted)">Quality clothing • Everyday</div>
+        </div>
+      </div>
+
+      <nav>
+        <a href="#">Home</a>
+        <a href="#">Men</a>
+        <a href="#">Women</a>
+        <a href="#">Kids</a>
+        <a class="nav-cta" href="#">Collections</a>
+      </nav>
+
+      <div class="controls">
+        <div class="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.35-4.35" stroke="#6b7280" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <input id="searchInput" placeholder="Search products..." />
+        </div>
+        <button class="icon-btn" id="cartBtn" aria-label="Open cart">🛒 <span id="cartCount" class="cart-badge">0</span></button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-card">
+          <h1>Fresh styles that fit your life</h1>
+          <p>Browse curated collections — shirts, jackets, pants and seasonal picks. Clean design, easy shopping.</p>
+          <div style="display:flex;gap:12px">
+            <a class="cta" href="#products">Shop Now</a>
+            <a class="icon-btn" href="#">Explore</a>
+          </div>
+        </div>
+
+        <div class="hero-slider" aria-hidden="false">
+          <div class="slides" id="slides">
+            <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1520975911134-5bc2f3f18e5d?auto=format&fit=crop&w=1200&q=60')"></div>
+            <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=1200&q=60')"></div>
+            <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1200&q=60')"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="products">
+        <div class="section-title">
+          <h2>Featured Products</h2>
+          <div style="color:var(--muted)">Showing <span id="resultsCount">8</span> items</div>
+        </div>
+
+        <div class="grid" id="productGrid">
+          <!-- Product cards injected by JS -->
+        </div>
+      </section>
+
+    </main>
+
+    <div class="cart-modal" id="cartModal">
+      <h3>Your Cart</h3>
+      <div id="cartItems"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+        <strong>Total:</strong>
+        <div id="cartTotal">₹0</div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="add" id="checkoutBtn">Checkout</button>
+        <button class="add" id="clearCartBtn" style="background:#ef4444;color:white">Clear</button>
+      </div>
+    </div>
+
+    <footer>
+      © Clothify • Made with care — Simple demo store
+    </footer>
+  </div>
+
+  <script>
+    // Demo product data (replace with your real data or API)
+    const products = [
+      {id:1,title:'Classic Polo Shirt',brand:'Lacosta',price:999,img:'https://images.unsplash.com/photo-1520975911134-5bc2f3f18e5d?auto=format&fit=crop&w=800&q=60'},
+      {id:2,title:'Denim Jacket',brand:'Ralph',price:2499,img:'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=60'},
+      {id:3,title:'Casual Tee',brand:'Urban',price:499,img:'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=800&q=60'},
+      {id:4,title:'Chino Pants',brand:'VanHen',price:1299,img:'https://images.unsplash.com/photo-1520975911134-5bc2f3f18e5d?auto=format&fit=crop&w=800&q=60'},
+      {id:5,title:'Summer Dress',brand:'Aurelia',price:1599,img:'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=60'},
+      {id:6,title:'Hooded Sweatshirt',brand:'Park Ave',price:1799,img:'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=800&q=60'},
+      {id:7,title:'Slim Jeans',brand:'Peter',price:1399,img:'https://images.unsplash.com/photo-1520975911134-5bc2f3f18e5d?auto=format&fit=crop&w=800&q=60'},
+      {id:8,title:'Formal Shirt',brand:'Louis P',price:1199,img:'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=60'}
+    ];
+
+    // Render products
+    const grid = document.getElementById('productGrid');
+    function renderProducts(list){
+      grid.innerHTML = '';
+      list.forEach(p => {
+        const card = document.createElement('div'); card.className='card';
+        card.innerHTML = `
+          <img src="${p.img}" alt="${p.title}" />
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-weight:700">${p.title}</div>
+              <div class="brand-name">${p.brand}</div>
+            </div>
+            <div class="price">₹${p.price}</div>
+          </div>
+          <button class="add" data-id="${p.id}">Add to cart</button>
+        `;
+        grid.appendChild(card);
+      })
+      document.getElementById('resultsCount').textContent = list.length;
+    }
+    renderProducts(products);
+
+    // Simple cart
+    let cart = {};
+    const cartBtn = document.getElementById('cartBtn');
+    const cartModal = document.getElementById('cartModal');
+    const cartCount = document.getElementById('cartCount');
+    const cartItemsDiv = document.getElementById('cartItems');
+    const cartTotalDiv = document.getElementById('cartTotal');
+
+    function updateCartUI(){
+      const items = Object.values(cart);
+      cartItemsDiv.innerHTML = '';
+      let total = 0; let qty = 0;
+      items.forEach(it=>{
+        total += it.price * it.qty; qty += it.qty;
+        const el = document.createElement('div'); el.className='cart-item';
+        el.innerHTML = `<img src="${it.img}"/><div style="flex:1"><strong>${it.title}</strong><div style="color:var(--muted);font-size:13px">₹${it.price} x ${it.qty}</div></div><div><button data-id="${it.id}" class="icon-btn">+ </button> <button data-id="${it.id}" class="icon-btn">-</button></div>`;
+        cartItemsDiv.appendChild(el);
+      })
+      cartTotalDiv.textContent = '₹' + total;
+      cartCount.textContent = qty;
+      if(qty===0){cartCount.style.display='inline-block'}
+    }
+
+    // Add to cart handler
+    document.addEventListener('click', e=>{
+      if(e.target.matches('.add')){
+        const id = +e.target.dataset.id;
+        const p = products.find(x=>x.id===id);
+        if(!cart[id]) cart[id]={...p,qty:0};
+        cart[id].qty += 1;
+        updateCartUI();
+      }
+      if(e.target.id==='cartBtn'){cartModal.style.display = cartModal.style.display==='block' ? 'none' : 'block'}
+      if(e.target.id==='clearCartBtn'){cart = {}; updateCartUI();}
+      if(e.target.id==='checkoutBtn'){alert('Checkout demo — integrate your payment flow');}
+      if(e.target.matches('.cart-item button') || e.target.parentElement && e.target.parentElement.classList.contains('cart-item')){
+        // noop
+      }
+      // plus/minus in cart item
+      if(e.target.parentElement && e.target.parentElement.matches('.cart-item')) return;
+      if(e.target.matches('.cart-item .icon-btn')){
+        const id = +e.target.dataset.id;
+        const isPlus = e.target.textContent.trim() === '+';
+        if(isPlus) cart[id].qty += 1; else cart[id].qty -= 1;
+        if(cart[id].qty<=0) delete cart[id];
+        updateCartUI();
+      }
+    })
+
+    // Search filter
+    document.getElementById('searchInput').addEventListener('input', function(){
+      const q = this.value.trim().toLowerCase();
+      if(!q) return renderProducts(products);
+      const res = products.filter(p=> (p.title + ' ' + p.brand).toLowerCase().includes(q));
+      renderProducts(res);
+    })
+
+    // Hero slider autoplay
+    const slides = document.getElementById('slides');
+    let idx = 0;
+    setInterval(()=>{
+      idx = (idx+1) % 3;
+      slides.style.transform = `translateX(${-idx*100}%)`;
+    },3500)
+
+    // Init cart UI
+    updateCartUI();
+
+  </script>
+</body>
+</html>
