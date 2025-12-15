@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>REVISION</title>
+    </head>
+    <body>
+         <h1>ORDER LIST</h1><hr>
+            <ol type="a">
+                <li>coffee</li>
+                <li>tea</li>
+                <li>milk</li>
+            </ol>
+            <ol type="I">
+                <li>bat</li>
+                <li>ball</li>
+                <li>glubs</li>
+            </ol>
+            <ol type="i">
+                <li>apple</li>
+                <li>banana</li>
+                <li>pineapple</li>
+            </ol>
+            <ol>
+                <li>pratik</li>
+                <li>yash</li>
+                <li>karan</li>
+            </ol>
+    </body>
+</html>
